@@ -7,6 +7,7 @@ import type {
   StageStatus,
   TaskDetail,
   TaskListItem,
+   TaskListParams,
 } from '../api/tasks'
 
 const DAY = 24 * 60 * 60 * 1000
@@ -179,9 +180,18 @@ function findTask(taskId: string): TaskDetail {
   return task
 }
 
-export async function mockListTasks(): Promise<Paginated<TaskListItem>> {
+export async function mockListTasks(
+  params: TaskListParams = {},
+): Promise<Paginated<TaskListItem>> {
   await delay()
+  const { from, to } = params
   const items = tasks
+    .filter((t) => {
+      if (!from || !to) return true
+      // A task matches if its span overlaps [from, to).
+      const spanStart = t.start_date ?? t.due_date
+      return spanStart < to && t.due_date >= from
+    })
     .map(toListItem)
     .sort((a, b) => a.due_date.localeCompare(b.due_date))
   return { items, total: items.length, page: 1, limit: 50 }

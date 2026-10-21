@@ -283,3 +283,26 @@ code {
   font-weight: 400;
   font-size: 0.9rem;
 }
+
+.calendar-wrap {
+  background: #fff;
+  border: 1px solid #e3e6ee;
+  border-radius: 10px;
+  padding: 1rem;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.legend i {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 0.3rem;
+}

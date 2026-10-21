@@ -12,6 +12,7 @@ import { RoomSettingsPage } from './pages/RoomSettingsPage'
 import { RoomsPage } from './pages/roomsPage'
 import { TaskDetailPage } from './pages/TaskDetailPage'
 import { RoomProvider } from './room/roomProvider'
+import { CalendarPage } from './pages/CalendarPage'
 
 export default function App() {
   return (
@@ -31,6 +32,7 @@ export default function App() {
             <Route path="settings" element={<RoomSettingsPage />} />
             <Route path="tasks/new" element={<CreateTaskPage />} />
             <Route path="tasks/:taskId" element={<TaskDetailPage />} />
+            <Route path="calendar" element={<CalendarPage />} />
           </Route>
         </Route>
       </Route>

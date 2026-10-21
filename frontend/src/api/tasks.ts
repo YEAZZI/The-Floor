@@ -80,7 +80,7 @@ export type TaskListParams = {
 }
 
 export function listTasks(roomId: string, params: TaskListParams = {}) {
-  if (USE_MOCKS) return mockListTasks()
+  if (USE_MOCKS) return mockListTasks(params)
   return apiRequest<Paginated<TaskListItem>>(`/rooms/${roomId}/tasks`, {
     query: { ...params },
   })
