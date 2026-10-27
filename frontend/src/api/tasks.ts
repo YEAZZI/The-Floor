@@ -6,6 +6,8 @@ import {
   mockListTasks,
   mockSetStageStatus,
 } from '../mocks/tasks'
+
+
 const USE_MOCKS = import.meta.env.VITE_USE_MOCKS === 'true'
 
 export type StageStatus = 'locked' | 'todo' | 'in_progress' | 'blocked' | 'done'
@@ -124,10 +126,69 @@ export type CreateTaskInput = {
   stages: CreateStageInput[]
 }
 
-export function CreateTask(roomId: string, input: CreateTaskInput) {
+export function createTask(roomId: string, input: CreateTaskInput) {
   if (USE_MOCKS) return mockCreateTask(roomId, input)
   return apiRequest<TaskDetail>(`/rooms/${roomId}/tasks`, {
     method: 'POST',
     body: input,
   })
+}
+
+export type UpdateTaskInput = {
+  title?: string
+  description?: string | null
+  start_date?: string | null
+  due_date?: string
+}
+
+export type StageFields = {
+  title?: string
+  tag_id?: string | null
+  assignee_ids?: string[]
+  due_date?: string | null
+  parallel_with_previous?: boolean
+  position?: number
+}
+
+export function updateTask(roomId: string, taskId: string, patch: UpdateTaskInput) {
+  return apiRequest<TaskDetail>(`/rooms/${roomId}/tasks/${taskId}`, {
+    method: 'PATCH',
+    body: patch,
+  })
+}
+
+export function deleteTask(roomId: string, taskId: string) {
+  return apiRequest<void>(`/rooms/${roomId}/tasks/${taskId}`, {
+    method: 'DELETE',
+  })
+}
+
+export function addStage(
+  roomId: string,
+  taskId: string,
+  input: CreateStageInput & { position?: number },
+) {
+  return apiRequest<TaskDetail>(`/rooms/${roomId}/tasks/${taskId}/stages`, {
+    method: 'POST',
+    body: input,
+  })
+}
+
+export function updateStage(
+  roomId: string,
+  taskId: string,
+  stageId: string,
+  patch: StageFields,
+) {
+  return apiRequest<TaskDetail>(
+    `/rooms/${roomId}/tasks/${taskId}/stages/${stageId}`,
+    { method: 'PATCH', body: patch },
+  )
+}
+
+export function deleteStage(roomId: string, taskId: string, stageId: string) {
+  return apiRequest<TaskDetail>(
+    `/rooms/${roomId}/tasks/${taskId}/stages/${stageId}`,
+    { method: 'DELETE' },
+  )
 }

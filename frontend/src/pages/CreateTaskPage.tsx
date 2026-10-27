@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { ApiError } from '../api/client'
 import { errorMessage } from '../api/errorMessage'
 import { listMembers, listTags } from '../api/members'
-import { CreateTask, type CreateTaskInput } from '../api/tasks'
+import { createTask, type CreateTaskInput } from '../api/tasks'
 import { StageDraftCard } from '../components/StageDraftCard'
 import {
   buildCreateInput,
@@ -42,7 +42,7 @@ export function CreateTaskPage() {
   })
 
   const create = useMutation({
-    mutationFn: (input: CreateTaskInput) => CreateTask(room.id, input),
+    mutationFn: (input: CreateTaskInput) => createTask(room.id, input),
     onSuccess: async (task) => {
       await queryClient.invalidateQueries({ queryKey: ['tasks', room.id] })
       navigate(`/room/${room.id}/tasks/${task.id}`)

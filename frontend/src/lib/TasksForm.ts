@@ -1,4 +1,4 @@
-import type { CreateTaskInput } from '../api/tasks'
+import type { CreateStageInput, CreateTaskInput, Stage } from '../api/tasks'
 
 export type StageDraft = {
   key: string
@@ -48,5 +48,38 @@ export function buildCreateInput(draft: TaskDraft): CreateTaskInput {
       due_date: localToIso(s.due),
       parallel_with_previous: i === 0 ? false : s.parallel,
     })),
+  }
+}
+
+// An ISO UTC string to the "2026-10-30T17:00" local time a datetime-local input expects.
+export function isoToLocal(iso: string | null): string {
+  if (!iso) return ''
+  const d = new Date(iso)
+  if (Number.isNaN(d.getTime())) return ''
+  const pad = (n: number) => String(n).padStart(2, '0')
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`
+}
+
+export function stageToDraft(stage: Stage): StageDraft {
+  return {
+    key: stage.id,
+    title: stage.title,
+    tagId: stage.tag?.id ?? '',
+    assigneeIds: stage.assignees.map((a) => a.id),
+    due: isoToLocal(stage.due_date),
+    parallel: stage.parallel_with_previous,
+  }
+}
+
+export function stageDraftToInput(
+  draft: StageDraft,
+  isFirst: boolean,
+): CreateStageInput {
+  return {
+    title: draft.title.trim(),
+    tag_id: draft.tagId || null,
+    assignee_ids: draft.assigneeIds,
+    due_date: localToIso(draft.due),
+    parallel_with_previous: isFirst ? false : draft.parallel,
   }
 }

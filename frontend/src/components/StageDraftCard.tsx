@@ -8,9 +8,10 @@ type Props = {
   tags: Tag[]
   members: Member[]
   errors: Record<string, string>
+  heading?: string
   onChange: (patch: Partial<StageDraft>) => void
-  onMove: (direction: -1 | 1) => void
-  onRemove: () => void
+  onMove?: (direction: -1 | 1) => void
+  onRemove?: () => void
 }
 
 export function StageDraftCard({
@@ -20,6 +21,7 @@ export function StageDraftCard({
   tags,
   members,
   errors,
+  heading,
   onChange,
   onMove,
   onRemove,
@@ -38,22 +40,34 @@ export function StageDraftCard({
   return (
     <div className="stage-draft">
       <div className="task-card-top">
-        <strong>Stage {index + 1}</strong>
-        <div className="actions">
-          <button type="button" disabled={index === 0} onClick={() => onMove(-1)}>
-            Up
-          </button>
-          <button
-            type="button"
-            disabled={index === count - 1}
-            onClick={() => onMove(1)}
-          >
-            Down
-          </button>
-          <button type="button" disabled={count === 1} onClick={onRemove}>
-            Remove
-          </button>
-        </div>
+        <strong>{heading ?? `Stage ${index + 1}`}</strong>
+        {(onMove || onRemove) && (
+          <div className="actions">
+            {onMove && (
+              <>
+                <button
+                  type="button"
+                  disabled={index === 0}
+                  onClick={() => onMove(-1)}
+                >
+                  Up
+                </button>
+                <button
+                  type="button"
+                  disabled={index === count - 1}
+                  onClick={() => onMove(1)}
+                >
+                  Down
+                </button>
+              </>
+            )}
+            {onRemove && (
+              <button type="button" disabled={count === 1} onClick={onRemove}>
+                Remove
+              </button>
+            )}
+          </div>
+        )}
       </div>
 
       <div className="field">
